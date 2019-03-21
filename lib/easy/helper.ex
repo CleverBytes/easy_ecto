@@ -1,14 +1,12 @@
 defmodule EASY.Helper do
-  @moduledoc """
-
-  """
+  @moduledoc false
 
   # TODO: read http://michal.muskala.eu/2017/07/30/configuring-elixir-libraries.html#recommendations-for-library-authors
   # TODO: read http://michal.muskala.eu/2017/02/10/error-handling-in-elixir-libraries.html
   require Ecto.Query
   @min_limit 0
-  @max_limit Application.get_env(:easy_ecto, :repo)[:max_limit]
-  @default_limit Application.get_env(:easy_ecto, :repo)[:default_limit]
+  @max_limit Application.get_env(:qber, :repo)[:max_limit]
+  @default_limit Application.get_env(:qber, :repo)[:default_limit]
 
   @min_skip 0
   @default_skip 0
@@ -39,7 +37,8 @@ defmodule EASY.Helper do
     end)
   end
 
-  defp schema_fields(%{from: {_source, schema}}) when schema != nil, do: schema.__schema__(:fields)
+  defp schema_fields(%{from: {_source, schema}}) when schema != nil,
+    do: schema.__schema__(:fields)
 
   defp schema_fields(_query), do: nil
 
@@ -84,5 +83,11 @@ defmodule EASY.Helper do
   # the value on the right.
   defp deep_resolve(_key, _left, right) do
     right
+  end
+
+  def fields(select) do
+    map = select
+    fields = map["$fields"]
+    Enum.map(fields, &String.to_existing_atom/1)
   end
 end

@@ -1,13 +1,11 @@
 defmodule EASY.Paginator do
-  @moduledoc """
-
-  """
+  @moduledoc false
   @doc false
   defmacro __using__(options) do
     quote location: :keep do
       import Ecto.Query
-      @repo unquote(options)[:base_repo]
-
+      @repo unquote(options)[:repo]
+      @doc false
       def new(query, params) do
         {skip, params} = EASY.Helper.get_skip_value(params)
         {limit, _params} = EASY.Helper.get_limit_value(params)
@@ -49,9 +47,7 @@ defmodule EASY.Paginator do
               from(p in queryable, where: is_nil(p.deleted_at))
           end
 
-        queryable
-        |> select([e], count(e.id))
-        |> @repo.one()
+        @repo.one(from(q in queryable, select: fragment("count(*)")))
       end
     end
   end

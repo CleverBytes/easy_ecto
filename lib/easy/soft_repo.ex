@@ -21,6 +21,16 @@ defmodule EASY.SoftRepo do
 
       @repo unquote(options)[:base_repo]
 
+      def one(queryable, opts \\ []) do
+        queryable = exclude_thrash(queryable)
+        @repo.one(queryable)
+      end
+
+      def one!(queryable, opts \\ []) do
+        queryable = exclude_thrash(queryable)
+        @repo.one(queryable)
+      end
+
       def all(queryable, opts \\ [])
 
       def all(queryable, opts) when length(opts) == 0 do
@@ -95,6 +105,19 @@ defmodule EASY.SoftRepo do
       #   end
       # end
 
+      def delete_record(record) do
+        if Map.has_key?(record, :deleted_at) do
+          if record.deleted_at do
+            {:already_deleted, record}
+          else
+            changeset = Ecto.Changeset.change(record, deleted_at: Timex.now())
+            @repo.update(changeset)
+          end
+        else
+          @repo.delete(record)
+        end
+      end
+
       def delete_all(queryable, opts \\ [])
 
       def delete_all(queryable, opts) when length(opts) == 0 do
@@ -145,9 +168,47 @@ defmodule EASY.SoftRepo do
       # Just like dynamically delegating =D
       defdelegate config(), to: @repo
 
-      defdelegate get_by(queryable, clauses, opts \\ []), to: @repo
+      # defdelegate get_by(queryable, clauses, opts \\ []), to: @repo
+      def get_by(queryable, clauses, opts \\ [])
 
-      defdelegate get_by!(queryable, clauses, opts \\ []), to: @repo
+      def get_by(queryable, clauses, opts) when length(opts) == 0 do
+        queryable = exclude_thrash(queryable)
+        @repo.get_by(queryable, clauses, opts)
+      end
+
+      def get_by(queryable, clauses, opts) when length(opts) > 0 do
+        case with_thrash_option?(opts) do
+          true ->
+            queryable = exclude_thrash(queryable, false)
+            opts = Keyword.drop(opts, [:with_thrash])
+            @repo.get_by(queryable, clauses, opts)
+
+          _ ->
+            opts = Keyword.drop(opts, [:with_thrash])
+            get_by(queryable, clauses, opts)
+        end
+      end
+
+      # defdelegate get_by!(queryable, clauses, opts \\ []), to: @repo
+      def get_by!(queryable, clauses, opts \\ [])
+
+      def get_by!(queryable, clauses, opts) when length(opts) == 0 do
+        queryable = exclude_thrash(queryable)
+        @repo.get_by!(queryable, clauses, opts)
+      end
+
+      def get_by!(queryable, clauses, opts) when length(opts) > 0 do
+        case with_thrash_option?(opts) do
+          true ->
+            queryable = exclude_thrash(queryable, false)
+            opts = Keyword.drop(opts, [:with_thrash])
+            @repo.get_by!(queryable, clauses, opts)
+
+          _ ->
+            opts = Keyword.drop(opts, [:with_thrash])
+            get_by!(queryable, clauses, opts)
+        end
+      end
 
       defdelegate in_transaction?(), to: @repo
 
@@ -161,9 +222,9 @@ defmodule EASY.SoftRepo do
 
       defdelegate insert_or_update!(changeset, opts \\ []), to: @repo
 
-      defdelegate one(queryable, opts \\ []), to: @repo
+      # defdelegate one(queryable, opts \\ []), to: @repo
 
-      defdelegate one!(queryable, opts \\ []), to: @repo
+      # defdelegate one!(queryable, opts \\ []), to: @repo
 
       defdelegate preload(struct_or_structs, preloads, opts \\ []), to: @repo
 

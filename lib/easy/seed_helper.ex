@@ -1,7 +1,5 @@
 defmodule EASY.SeedHelper do
-  @moduledoc """
-
-  """
+  @moduledoc false
 
   @doc false
   defmacro __using__(_) do
@@ -16,7 +14,7 @@ defmodule EASY.SeedHelper do
           ) do
         base_path =
           if base_path == nil,
-            do: Application.get_env(:easy_ecto, :repo)[:seed_base_path],
+            do: Application.get_env(:qber, :repo)[:seed_base_path],
             else: base_path
 
         (csv_path <> ".csv")
