@@ -5,8 +5,8 @@ defmodule EASY.Helper do
   # TODO: read http://michal.muskala.eu/2017/02/10/error-handling-in-elixir-libraries.html
   require Ecto.Query
   @min_limit 0
-  @max_limit Application.get_env(:qber, :repo)[:max_limit]
-  @default_limit Application.get_env(:qber, :repo)[:default_limit]
+  @max_limit Application.get_env(:easy_ecto, :repo)[:max_limit]
+  @default_limit Application.get_env(:easy_ecto, :repo)[:default_limit]
 
   @min_skip 0
   @default_skip 0

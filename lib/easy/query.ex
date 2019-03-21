@@ -15,10 +15,10 @@ defmodule EASY.Query do
     # TODO: $group should be part of select
     "$group" => nil,
     "$skip" => 0,
-    "$limit" => Application.get_env(:qber, :repo)[:default_limit]
+    "$limit" => Application.get_env(:easy_ecto, :repo)[:default_limit]
   }
 
-  @repo Application.get_env(:qber, :repo)[:query_repo]
+  @repo Application.get_env(:easy_ecto, :repo)[:query_repo]
   use EASY.Paginator, repo: @repo
   # import Query.Where, only: [build_where: 2] # import and use like this if without defmacro
   # import Query.OrderBy, only: [build_order_by: 2]
