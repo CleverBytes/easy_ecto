@@ -76,9 +76,8 @@ defmodule EASY.Query do
 
   @doc false
   def fetch(queryable, query_opts, role \\nil, res \\nil, action \\nil) do
-
-    opts = FAT.Helper.deep_merge(@default_query_opts, query_opts)
-
+    opts = EASY.Helper.deep_merge(@default_query_opts, query_opts)
+	  
 
     acl_rule = if role != nil do
       Acl.hasAccess(role, "read", res, action)
@@ -89,7 +88,7 @@ defmodule EASY.Query do
       {:ok, rule} ->
         where_clause= Map.merge(opts["$where"], rule["$where"])
         options = Map.merge(opts, %{"$where" => where_clause})
-          FAT.Query.build(queryable, options)
+          EASY.Query.build(queryable, opts)
       _ ->
         false
     end
