@@ -77,21 +77,23 @@ defmodule EASY.Query do
   @doc false
   def fetch(queryable, query_opts, role \\nil, res \\nil, action \\nil) do
     opts = EASY.Helper.deep_merge(@default_query_opts, query_opts)
-	  
 
-    acl_rule = if role != nil do
+    acl_rule = if (is_nil(role)) do
+      nil
+    else
       Acl.hasAccess(role, "read", res, action)
-      else
-       nil
     end
+
     queryable = case acl_rule do
       {:ok, rule} ->
         where_clause= Map.merge(opts["$where"], rule["$where"])
         options = Map.merge(opts, %{"$where" => where_clause})
-          EASY.Query.build(queryable, opts)
+        EASY.Query.build(queryable, opts)
       _ ->
         false
     end
+
+
     case opts["$find"] do
       "$one" when queryable != false ->
         {:ok, @repo.one(Ecto.Query.limit(queryable, 1))}
