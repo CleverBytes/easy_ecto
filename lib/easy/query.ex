@@ -108,4 +108,24 @@ defmodule EASY.Query do
         {:error, "Method not found"}
     end
   end
+
+#  def fetch(queryable, query_opts, role \\nil, res \\nil, action \\nil) do
+#    opts = EASY.Helper.deep_merge(@default_query_opts, query_opts)
+#    queryable = EASY.Query.build(queryable, opts)
+#
+#    case opts["$find"] do
+#      "$one" ->
+#        {:ok, @repo.one(Ecto.Query.limit(queryable, 1))}
+#
+#      "$all" ->
+#        {:ok, new(queryable, skip: opts["$skip"], limit: opts["$limit"])}
+#
+#      nil ->
+#        {:error, "Method not found"}
+#
+#      _ ->
+#        {:error, "Method not found"}
+#    end
+#
+#  end
 end
