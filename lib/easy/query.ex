@@ -87,9 +87,9 @@ defmodule EASY.Query do
     queryable = case acl_rule do
       {:ok, rule} ->
       where_clause=if(opts["$where"] != nil) do
-          rule["$where"]
-        else
           Map.merge(opts["$where"], rule["$where"])
+        else
+           rule["$where"]
         end
         options = Map.merge(opts, %{"$where" => where_clause})
         EASY.Query.build(queryable, opts)
