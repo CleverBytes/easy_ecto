@@ -49,7 +49,7 @@ defmodule Query.Join do
                       join,
                       [q],
                       jt in ^join_table,
-                      field(q, ^String.to_atom(join_opts["$on_field"])) !=
+                      on: field(q, ^String.to_atom(join_opts["$on_field"])) !=
                         field(jt, ^String.to_atom(join_opts["$on_join_table_field"]))
                     )
 
@@ -59,7 +59,7 @@ defmodule Query.Join do
                       join,
                       [q],
                       jt in ^join_table,
-                      field(q, ^String.to_atom(join_opts["$on_field"])) in field(
+                      on: field(q, ^String.to_atom(join_opts["$on_field"])) in field(
                         jt,
                         ^String.to_atom(join_opts["$on_join_table_field"])
                       )
@@ -71,7 +71,7 @@ defmodule Query.Join do
                       join,
                       [q],
                       jt in ^join_table,
-                      field(jt, ^String.to_atom(join_opts["$on_join_table_field"])) in field(
+                      on: field(jt, ^String.to_atom(join_opts["$on_join_table_field"])) in field(
                         q,
                         ^String.to_atom(join_opts["$on_field"])
                       )
@@ -83,7 +83,7 @@ defmodule Query.Join do
                       join,
                       [q],
                       jt in ^join_table,
-                      field(q, ^String.to_atom(join_opts["$on_field"])) ==
+                      on: field(q, ^String.to_atom(join_opts["$on_field"])) ==
                         field(jt, ^String.to_atom(join_opts["$on_join_table_field"]))
                     )
                 end
