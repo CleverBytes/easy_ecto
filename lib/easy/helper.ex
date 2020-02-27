@@ -37,14 +37,15 @@ defmodule EASY.Helper do
     end)
   end
 
-  defp schema_fields(%{from: {_source, schema}}) when schema != nil,
-    do: schema.__schema__(:fields)
+  defp schema_fields(%{from: {_source, schema}}, queryable) when schema != nil,
+       do: schema.__schema__(:fields)
 
   defp schema_fields(_query), do: nil
+  defp schema_fields(_query, queryable), do: queryable.__schema__(:fields)
 
   def field_exists?(queryable, column) do
     query = Ecto.Queryable.to_query(queryable)
-    fields = schema_fields(query)
+    fields = schema_fieldsschema_fields(query, queryable)
 
     if fields == nil do
       true
