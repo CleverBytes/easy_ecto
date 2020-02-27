@@ -45,7 +45,7 @@ defmodule EASY.Helper do
 
   def field_exists?(queryable, column) do
     query = Ecto.Queryable.to_query(queryable)
-    fields = schema_fieldsschema_fields(query, queryable)
+    fields = schema_fields(query, queryable)
 
     if fields == nil do
       true
