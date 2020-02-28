@@ -25,7 +25,7 @@ defmodule EASY.MixProject do
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
-    [{:csv, "~> 2.0.0"},
+    [{:csv, "~> 2.3.1"},
     {:ecto_sql, "~> 3.0", override: true},
       {:ecto, "~> 3.3.3"},
       {:acl, ">= 0.0.0"}
