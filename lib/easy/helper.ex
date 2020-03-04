@@ -29,24 +29,39 @@ defmodule EASY.Helper do
   def to_struct(kind, attrs) do
     struct = struct(kind)
 
-    Enum.reduce(Map.to_list(struct), struct, fn {k, _}, acc ->
-      case Map.fetch(attrs, Atom.to_string(k)) do
-        {:ok, v} -> %{acc | k => v}
-        :error -> acc
+    Enum.reduce(
+      Map.to_list(struct),
+      struct,
+      fn {k, _}, acc ->
+        case Map.fetch(attrs, Atom.to_string(k)) do
+          {:ok, v} -> %{acc | k => v}
+          :error -> acc
+        end
       end
-    end)
+    )
   end
 
-  defp schema_fields(%{from: {_source, schema}}, queryable) when schema != nil,
+  defp schema_fields(%{from: {_source, schema}}) when schema != nil,
        do: schema.__schema__(:fields)
 
+  defp schema_fields(
+         %{
+           from: %{
+             source: {_name, schema}
+           }
+         }
+       ) when schema != nil
+    do
+    schema.__schema__(:fields)
+  end
+
+
   defp schema_fields(_query), do: nil
-  defp schema_fields(_query, queryable), do: queryable.__schema__(:fields)
+
 
   def field_exists?(queryable, column) do
     query = Ecto.Queryable.to_query(queryable)
-    fields = schema_fields(query, queryable)
-
+    fields = schema_fields(query)
     if fields == nil do
       true
     else
