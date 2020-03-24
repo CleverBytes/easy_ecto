@@ -9,10 +9,14 @@ defmodule EASY.Paginator do
       def new(query, params) do
         {skip, params} = EASY.Helper.get_skip_value(params)
         {limit, _params} = EASY.Helper.get_limit_value(params)
-
+          data = data(query, skip, limit)
         %{
-          data: data(query, skip, limit),
-          meta: meta(query, skip, limit)
+          data: data,
+          meta: %{
+            skip: skip,
+            limit: limit,
+            count: Enum.count(data)
+          }
         }
       end
 

@@ -15,7 +15,7 @@ defmodule Query.Select do
           select: map(j, [:field1, :field2,  {:assoc_model, [:fields]}])>
 
       """
-      def build_select(queryable, opts_select, model) do
+      def build_select(queryable, opts_select, model, opts_group_by) do
         case opts_select do
           nil ->
             queryable
@@ -42,7 +42,8 @@ defmodule Query.Select do
 
               # Check if it contain assoc fields
               if Enum.count(keys) > 1 do
-                assoc = tl(keys) |> hd()
+                assoc = tl(keys)
+                        |> hd()
                 # Get values of assoc table
                 assoc_fields = opts_select[assoc]
 
@@ -75,18 +76,23 @@ defmodule Query.Select do
               end
             else
               # if map contain only list
+              IO.inspect(select)
               fields =
-                Enum.reduce(select, [], fn {key, value}, fields ->
-                  if key == "$fields" do
-                    fields ++ Enum.map(value, &String.to_existing_atom/1)
-                  else
-                    # if map contain asso_table and fields
-                    relation_name = String.to_existing_atom(key)
-                    assoc_fields = value
-                    Query.Helper.associations(model, relation_name, fields, assoc_fields)
+                Enum.reduce(
+                  select,
+                  [],
+                  fn {key, value}, fields ->
+                    if key == "$fields" do
+                      fields ++ Enum.map(value, &String.to_existing_atom/1)
+                    else
+                      # if map contain asso_table and fields
+                      relation_name = String.to_existing_atom(key)
+                      assoc_fields = value
+                      Query.Helper.associations(model, relation_name, fields, assoc_fields)
+                    end
                   end
-                end)
-
+                )
+              IO.inspect(fields)
               from(q in queryable, select: map(q, ^Enum.uniq(fields)))
             end
         end

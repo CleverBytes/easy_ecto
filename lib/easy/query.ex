@@ -33,7 +33,7 @@ defmodule EASY.Query do
   use Query.Include
   use Query.Select
   use Query.Join
-  use Query.GroupBy
+  use Query.Distinct
   # TODO: Should return {:ok, query}
   @doc """
   Call the `respective query method` depending on the params.
@@ -62,7 +62,7 @@ defmodule EASY.Query do
   defp build_query(queryable, opts, model) do
     # TODO: LIMP: first confirm the field exist in the schema
     queryable
-    |> build_select(opts["$select"], model)
+    |> build_select(opts["$select"], model,opts["$group"])
     |> build_where(opts["$where"])
     |> build_join(opts["$join"], "$join")
     |> build_join(opts["$right_join"], "$right_join")
@@ -71,7 +71,7 @@ defmodule EASY.Query do
     |> build_join(opts["$full_join"], "$full_join")
     |> build_include(opts["$include"], model)
     |> build_order_by(opts["$order"])
-    |> build_group_by(opts["$group"])
+    |> build_distinct(opts["$distinct"])
   end
 
   @doc false
