@@ -15,7 +15,7 @@ defmodule EASY.Paginator do
           meta: %{
             skip: skip,
             limit: limit,
-            count: count: count(query)
+            count: count(query)
           }
         }
       end
