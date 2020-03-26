@@ -15,7 +15,7 @@ defmodule EASY.Paginator do
           meta: %{
             skip: skip,
             limit: limit,
-            count: Enum.count(data)
+            count: count: count(query)
           }
         }
       end
