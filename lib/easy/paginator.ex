@@ -41,6 +41,7 @@ defmodule EASY.Paginator do
           |> exclude(:order_by)
           |> exclude(:preload)
           |> exclude(:select)
+          |> exclude(:distinct)
 
         queryable =
           case EASY.Helper.field_exists?(queryable, :deleted_at) do
